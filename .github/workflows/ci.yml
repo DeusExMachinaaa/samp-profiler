@@ -1,0 +1,63 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  samp-linux-32:
+    name: SA-MP Linux 32-bit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ g++-multilib
+      - name: Configure
+        run: |
+          cmake -S . -B build-samp-linux \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DSAMP_PROFILER_BUILD_TESTS=ON \
+            -DCMAKE_CXX_FLAGS=-m32 \
+            -DCMAKE_SHARED_LINKER_FLAGS=-m32
+      - name: Build
+        run: cmake --build build-samp-linux -j$(nproc)
+      - name: Test
+        run: ctest --test-dir build-samp-linux --output-on-failure
+
+  samp-windows-32:
+    name: SA-MP Windows 32-bit
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configure
+        run: cmake -S . -B build-samp-windows -A Win32 -DSAMP_PROFILER_BUILD_TESTS=ON
+      - name: Build
+        run: cmake --build build-samp-windows --config Release
+      - name: Test
+        run: ctest --test-dir build-samp-windows -C Release --output-on-failure
+
+  openmp-linux-64:
+    name: open.mp Linux 64-bit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++
+      - name: Configure
+        run: cmake -S . -B build-openmp-linux -DCMAKE_BUILD_TYPE=Release -DSAMP_PROFILER_BUILD_TESTS=ON
+      - name: Build
+        run: cmake --build build-openmp-linux -j$(nproc)
+      - name: Test
+        run: ctest --test-dir build-openmp-linux --output-on-failure
+
+  openmp-windows-64:
+    name: open.mp Windows 64-bit
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configure
+        run: cmake -S . -B build-openmp-windows -A x64 -DSAMP_PROFILER_BUILD_TESTS=ON
+      - name: Build
+        run: cmake --build build-openmp-windows --config Release
+      - name: Test
+        run: ctest --test-dir build-openmp-windows -C Release --output-on-failure

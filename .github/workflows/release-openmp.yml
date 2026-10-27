@@ -1,0 +1,72 @@
+name: Release open.mp
+
+on:
+  push:
+    tags:
+      - 'v*-openmp'
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    name: Package open.mp Linux 64-bit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++
+      - name: Build and test
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DSAMP_PROFILER_BUILD_TESTS=ON
+          cmake --build build -j$(nproc)
+          ctest --test-dir build --output-on-failure
+      - name: Package
+        run: |
+          mkdir -p package/samp-profiler-openmp-linux-x64
+          cp build/samp-profiler.so package/samp-profiler-openmp-linux-x64/
+          cp plugin/samp_profiler.inc package/samp-profiler-openmp-linux-x64/
+          cp README.md LICENSE package/samp-profiler-openmp-linux-x64/
+          mkdir -p dist
+          tar -czf dist/samp-profiler-openmp-linux-x64.tar.gz -C package samp-profiler-openmp-linux-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openmp-linux-package
+          path: dist/samp-profiler-openmp-linux-x64.tar.gz
+
+  windows:
+    name: Package open.mp Windows 64-bit
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and test
+        run: |
+          cmake -S . -B build -A x64 -DSAMP_PROFILER_BUILD_TESTS=ON
+          cmake --build build --config Release
+          ctest --test-dir build -C Release --output-on-failure
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package\samp-profiler-openmp-windows-x64, dist | Out-Null
+          Copy-Item build\Release\samp-profiler.dll package\samp-profiler-openmp-windows-x64\
+          Copy-Item plugin\samp_profiler.inc, README.md, LICENSE package\samp-profiler-openmp-windows-x64\
+          Compress-Archive -Path package\samp-profiler-openmp-windows-x64 -DestinationPath dist\samp-profiler-openmp-windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openmp-windows-package
+          path: dist/samp-profiler-openmp-windows-x64.zip
+
+  publish:
+    name: Publish open.mp release
+    needs: [linux, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: openmp-*-package
+          path: dist
+          merge-multiple: true
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "samp-profiler $GITHUB_REF_NAME — open.mp" --generate-notes
