@@ -135,7 +135,11 @@ PLUGIN_EXPORT bool PLUGIN_CALL Load(void **data)
 {
     g_logprintf = reinterpret_cast<LogPrintf>(data[PLUGIN_DATA_LOGPRINTF]);
     pAMXFunctions = data[PLUGIN_DATA_AMX_EXPORTS];
-    if (g_logprintf != nullptr) g_logprintf("[samp-profiler] loaded (explicit low-overhead mode)");
+    if (g_logprintf != nullptr) {
+        g_logprintf("[samp-profiler] samp-profiler by DeusExMachinaaa");
+        g_logprintf("[samp-profiler] GitHub: https://github.com/DeusExMachinaaa");
+        g_logprintf("[samp-profiler] loaded (explicit low-overhead mode)");
+    }
     return true;
 }
 

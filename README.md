@@ -30,6 +30,7 @@ instruction overhead.
 plugin/                 Pawn include distributed to server owners
 source/                 C++ plugin implementation and bundled SDK
 tests/                  Standalone core tests
+examples/test.pwn       Minimal gamemode integration example
 .github/workflows/      CI and release automation
 README.md               This guide
 ```
@@ -51,6 +52,13 @@ plugins samp-profiler
 
 On Linux, use the `.so` suffix. On Windows, use the `.dll` suffix. The plugin
 does not create files during normal profiling.
+
+At startup, the server log includes the project banner and author link:
+
+```text
+[samp-profiler] samp-profiler by DeusExMachinaaa
+[samp-profiler] GitHub: https://github.com/DeusExMachinaaa
+```
 
 ## Pawn usage
 
@@ -95,6 +103,9 @@ Example server output:
 
 Sections may be nested up to 32 levels per AMX. `SP_End` must be called in the
 reverse order of `SP_Begin`.
+
+See [`examples/test.pwn`](examples/test.pwn) for a complete minimal gamemode
+that profiles `OnPlayerUpdate` and exposes an admin-only `/profiler` command.
 
 ## C++ usage
 
