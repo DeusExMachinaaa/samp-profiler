@@ -7,6 +7,10 @@
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
+#include <windows.h>
+#else
+#include <time.h>
+#endif
 
 namespace {
 
@@ -21,10 +25,6 @@ void CopyName(char (&destination)[ProfilerCore::kNameCapacity], const char *sour
 }
 
 } // namespace
-#include <windows.h>
-#else
-#include <time.h>
-#endif
 
 ProfilerCore &ProfilerCore::Instance()
 {

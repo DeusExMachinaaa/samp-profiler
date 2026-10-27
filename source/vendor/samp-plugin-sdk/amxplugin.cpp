@@ -38,7 +38,7 @@ void *pAMXFunctions;
 
 //----------------------------------------------------------
 
-#if (defined(WIN32) || defined(_WIN32)) && defined(_MSC_VER)
+#if (defined(WIN32) || defined(_WIN32)) && defined(_MSC_VER) && !defined(_WIN64)
 
 // Optimized Inline Assembly Thunks for MS VC++
 
