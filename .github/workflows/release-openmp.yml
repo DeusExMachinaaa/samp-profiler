@@ -25,8 +25,7 @@ jobs:
         run: |
           mkdir -p package/samp-profiler-openmp-linux-x64
           cp build/samp-profiler.so package/samp-profiler-openmp-linux-x64/
-          cp plugin/samp_profiler.inc package/samp-profiler-openmp-linux-x64/
-          cp README.md LICENSE package/samp-profiler-openmp-linux-x64/
+          cp plugin/samp_profiler.inc examples/test.pwn README.md LICENSE package/samp-profiler-openmp-linux-x64/
           mkdir -p dist
           tar -czf dist/samp-profiler-openmp-linux-x64.tar.gz -C package samp-profiler-openmp-linux-x64
       - uses: actions/upload-artifact@v4
@@ -49,7 +48,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force package\samp-profiler-openmp-windows-x64, dist | Out-Null
           Copy-Item build\Release\samp-profiler.dll package\samp-profiler-openmp-windows-x64\
-          Copy-Item plugin\samp_profiler.inc, README.md, LICENSE package\samp-profiler-openmp-windows-x64\
+          Copy-Item plugin\samp_profiler.inc, examples\test.pwn, README.md, LICENSE package\samp-profiler-openmp-windows-x64\
           Compress-Archive -Path package\samp-profiler-openmp-windows-x64 -DestinationPath dist\samp-profiler-openmp-windows-x64.zip
       - uses: actions/upload-artifact@v4
         with:

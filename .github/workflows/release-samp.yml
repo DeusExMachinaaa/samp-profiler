@@ -28,8 +28,7 @@ jobs:
         run: |
           mkdir -p package/samp-profiler-samp-linux-x86
           cp build/samp-profiler.so package/samp-profiler-samp-linux-x86/
-          cp plugin/samp_profiler.inc package/samp-profiler-samp-linux-x86/
-          cp README.md LICENSE package/samp-profiler-samp-linux-x86/
+          cp plugin/samp_profiler.inc examples/test.pwn README.md LICENSE package/samp-profiler-samp-linux-x86/
           mkdir -p dist
           tar -czf dist/samp-profiler-samp-linux-x86.tar.gz -C package samp-profiler-samp-linux-x86
       - uses: actions/upload-artifact@v4
@@ -52,7 +51,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force package\samp-profiler-samp-windows-x86, dist | Out-Null
           Copy-Item build\Release\samp-profiler.dll package\samp-profiler-samp-windows-x86\
-          Copy-Item plugin\samp_profiler.inc, README.md, LICENSE package\samp-profiler-samp-windows-x86\
+          Copy-Item plugin\samp_profiler.inc, examples\test.pwn, README.md, LICENSE package\samp-profiler-samp-windows-x86\
           Compress-Archive -Path package\samp-profiler-samp-windows-x86 -DestinationPath dist\samp-profiler-samp-windows-x86.zip
       - uses: actions/upload-artifact@v4
         with:
